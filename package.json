@@ -1,7 +1,7 @@
 {
   "name": "app_demo",
-  "version": "1.1.1",
-  "description": "Todo",
+  "version": "1.1.2",
+  "description": "Application ElectronJs - Gestion d'articles",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Isaac",
+  "author": "A-Gaborit",
   "license": "ISC",
   "devDependencies": {
     "@electron-forge/cli": "^7.9.0",
