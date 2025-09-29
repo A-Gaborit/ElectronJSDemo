@@ -5,7 +5,7 @@
     <div class="uk-position-cover uk-overlay-primary"></div>
     <div class="uk-width-medium uk-padding-small uk-position-z-index" uk-scrollspy="cls: uk-animation-fade">
       <div class="uk-text-center uk-margin">
-        <img src="../../assets/img/login-logo.svg" alt="Logo">
+        <img height="75px" width="75px" src="../../assets/img/logo.svg" alt="Logo">
       </div>
 
       <!-- login -->
@@ -14,7 +14,7 @@
           <div class="uk-margin-small">
             <div class="uk-inline uk-width-1-1">
               <span class="uk-form-icon uk-form-icon-flip" data-uk-icon="icon: mail"></span>
-              <input class="uk-input uk-border-pill" v-model="formLogin.email" required placeholder="Email" type="text">
+              <input class="uk-input uk-border-pill" v-model="formLogin.email" required placeholder="Email" type="email">
             </div>
           </div>
           <div class="uk-margin-small">
@@ -23,8 +23,10 @@
               <input class="uk-input uk-border-pill" v-model="formLogin.password" required placeholder="Mot de passe" type="password">
             </div>
           </div>
+
           <p v-if="errorMessage" class="uk-text-danger uk-margin-small">{{ errorMessage }}</p>
           <p v-if="successMessage" class="uk-text-success uk-margin-small">{{ successMessage }}</p>
+
           <div class="uk-margin-bottom">
             <button type="submit" class="uk-button uk-button-primary uk-border-pill uk-width-1-1">Connexion</button>
           </div>
@@ -100,12 +102,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { loginApi, registerApi } from '../services/auth.js';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {loginApi, registerApi} from '../services/auth.js';
 
 const router = useRouter();
-const formLogin = ref({ email: '', password: '' });
+const formLogin = ref({email: '', password: ''});
 
 const errorMessage = ref('');
 const successMessage = ref('');
@@ -146,7 +148,7 @@ async function register() {
 
     if (registerFormRef?.value) registerFormRef.value.setAttribute('hidden', '');
     if (loginFormRef?.value) loginFormRef.value.removeAttribute('hidden');
-    
+
   } catch (err) {
     registerError.value = err?.message || 'Une erreur est survenue';
   }
