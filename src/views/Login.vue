@@ -9,7 +9,7 @@
       </div>
 
       <!-- login -->
-      <form class="toggle-class" @submit.prevent="login" ref="loginFormRef">
+      <form class="toggle-class" @submit.prevent="signIn" ref="loginFormRef">
         <fieldset class="uk-fieldset">
           <div class="uk-margin-small">
             <div class="uk-inline uk-width-1-1">
@@ -24,9 +24,6 @@
             </div>
           </div>
 
-          <p v-if="errorMessage" class="uk-text-danger uk-margin-small">{{ errorMessage }}</p>
-          <p v-if="successMessage" class="uk-text-success uk-margin-small">{{ successMessage }}</p>
-
           <div class="uk-margin-bottom">
             <button type="submit" class="uk-button uk-button-primary uk-border-pill uk-width-1-1">Connexion</button>
           </div>
@@ -35,7 +32,7 @@
       <!-- /login -->
 
       <!-- register -->
-      <form class="toggle-class" @submit.prevent="register" hidden ref="registerFormRef">
+      <form class="toggle-class" @submit.prevent="signUp" hidden ref="registerFormRef">
         <div class="uk-margin-small">
           <div class="uk-inline uk-width-1-1">
             <span class="uk-form-icon uk-form-icon-flip" data-uk-icon="icon: user"></span>
@@ -78,7 +75,6 @@
             <input class="uk-input uk-border-pill" v-model="formRegister.phone" placeholder="Téléphone" type="tel">
           </div>
         </div>
-        <p v-if="registerError" class="uk-text-danger uk-margin-small">{{ registerError }}</p>
         <div class="uk-margin-bottom">
           <button type="submit" class="uk-button uk-button-primary uk-border-pill uk-width-1-1">Inscription</button>
         </div>
@@ -102,19 +98,15 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import {useRouter} from 'vue-router';
-import {loginApi, registerApi} from '../services/auth.js';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { login, register } from '../services/auth.js';
 
 const router = useRouter();
-const formLogin = ref({email: '', password: ''});
-
-const errorMessage = ref('');
-const successMessage = ref('');
-
-const loginFormRef = ref(null);
-const registerFormRef = ref(null);
-
+const formLogin = ref({
+  email: null, 
+  password: null
+});
 const formRegister = ref({
   pseudo: null,
   email: null,
@@ -124,33 +116,49 @@ const formRegister = ref({
   city: null,
   phone: null
 });
-const registerError = ref('');
+const loginFormRef = ref(null);
+const registerFormRef = ref(null);
 
-async function login() {
-  errorMessage.value = '';
+async function signIn() {
   try {
-    await loginApi(formLogin.value);
+    await login(formLogin.value);
     router.push('/articles');
   } catch (err) {
-    errorMessage.value = err?.message || 'Une erreur est survenue';
+    UIkit.notification({
+      message: err.message,
+      status: 'danger',
+      timeout: 5000
+    });
   }
 }
 
-async function register() {
-  registerError.value = '';
+async function signUp() {
   if (formRegister.value.password !== formRegister.value.passwordConfirm) {
-    registerError.value = 'Les mots de passe ne correspondent pas';
+    UIkit.notification({
+      message: 'Les mots de passe ne correspondent pas',
+      status: 'danger',
+      timeout: 5000
+    });
     return;
   }
   try {
-    await registerApi(formRegister.value);
-    successMessage.value = 'Inscription effectuée avec succès';
+    await register(formRegister.value);
+
+    UIkit.notification({
+      message: 'Inscription effectuée avec succès',
+      status: 'success',
+      timeout: 5000
+    });
 
     if (registerFormRef?.value) registerFormRef.value.setAttribute('hidden', '');
     if (loginFormRef?.value) loginFormRef.value.removeAttribute('hidden');
 
   } catch (err) {
-    registerError.value = err?.message || 'Une erreur est survenue';
+    UIkit.notification({
+      message: err.message,
+      status: 'danger',
+      timeout: 5000
+    });
   }
 }
 </script>

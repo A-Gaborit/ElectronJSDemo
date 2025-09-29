@@ -4,7 +4,6 @@
       <h2 class="uk-heading-bullet">{{ isCreate ? 'Créer un article' : 'Modifier l\'article' }}</h2>
 
       <div v-if="loading" class="uk-text-center uk-padding">Chargement...</div>
-      <div v-else-if="error" class="uk-alert-danger" data-uk-alert>{{ error }}</div>
 
       <form v-else class="uk-form-stacked" @submit.prevent="onSubmit">
         <div class="uk-margin">
@@ -52,16 +51,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getArticle, saveArticle } from '../../services/article'
 
 const route = useRoute()
 const router = useRouter()
 
 const loading = ref(false)
 const saving = ref(false)
-const error = ref(null)
-const form = ref({ id: null, title: '', desc: '', author: '', imgPath: '' })
+const form = ref({ id: null, title: null, desc: null, author: null, imgPath: null })
 const isCreate = ref(false)
 
 onMounted(async () => {
@@ -70,41 +69,42 @@ onMounted(async () => {
     return
   }
   
+  await loadArticle()
+})
+
+async function loadArticle() {
   loading.value = true
   try {
-    const res = await fetch(`http://localhost:3000/articles/${route.params.id}`)
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    if (!json || !json.data) throw new Error('Réponse invalide')
-    const a = json.data
+    const { data } = await getArticle(route.params.id)
     form.value = {
-      id: a.id,
-      title: a.title || '',
-      desc: a.desc || '',
-      author: a.author || '',
-      imgPath: a.imgPath || ''
+      id: data.id,
+      title: data.title,
+      desc: data.desc,
+      author: data.author,
+      imgPath: data.imgPath
     }
   } catch (e) {
-    error.value = e?.message || String(e)
+    UIkit.notification({
+      message: 'Erreur lors de la récupération de l\'article',
+      status: 'danger',
+      timeout: 5000
+    })
   } finally {
     loading.value = false
   }
-})
+}
 
 async function onSubmit() {
   saving.value = true
-  error.value = null
   try {
-    const res = await fetch('http://localhost:3000/articles/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form.value)
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    // Retour vers le détail ou la liste
+    await saveArticle(form.value)
     await router.push({ name: 'ArticleList'})
-  } catch (e) {
-    error.value = e?.message || String(e)
+  } catch (err) {
+    UIkit.notification({
+      message: 'Erreur lors de la sauvegarde de l\'article',
+      status: 'danger',
+      timeout: 5000
+    })
   } finally {
     saving.value = false
   }

@@ -7,8 +7,13 @@
 
       <div class="uk-navbar-right">
         <ul class="uk-tab uk-margin-remove-bottom">
-          <li :class="{ 'uk-active': $route.path === '/' }">
+          <li v-if="!isAuthenticated" :class="{ 'uk-active': $route.path === '/' }">
             <router-link to="/" class="uk-text-bold uk-link-muted">Connexion</router-link>
+          </li>
+          <li v-else>
+            <button @click="logoutUser" class="uk-button uk-button-link uk-text-bold uk-link-muted">
+              Se déconnecter
+            </button>
           </li>
           <li :class="{ 'uk-active': $route.path.startsWith('/articles') }">
             <router-link to="/articles" class="uk-text-bold uk-link-muted">Articles</router-link>
@@ -20,8 +25,14 @@
 </template>
 
 <script setup>
-// Aucun style personnalisé, uniquement des classes UIkit
-</script>
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../services/auth'
 
-<style scoped>
-</style>
+const router = useRouter()
+const { isAuthenticated, logout } = useAuthStore()
+
+const logoutUser = () => {
+  logout()
+  router.push('/')
+}
+</script>
