@@ -1,4 +1,5 @@
 import { reactive, toRefs } from 'vue'
+import logger from 'electron-log';
 import API_URL from './api';
 
 const state = reactive({
@@ -59,6 +60,7 @@ export const login = async (credentials) => {
     useAuthStore().setToken(data.data);
     return data;
   } catch (error) {
+    logger.error(`Error login:`, error);
     localStorage.removeItem('token');
     throw error;
   }
@@ -76,6 +78,7 @@ export const register = async (payload) => {
 
     return data;
   } catch (error) {
+    logger.error(`Error register:`, error);
     localStorage.removeItem('token');
     throw error;
   }

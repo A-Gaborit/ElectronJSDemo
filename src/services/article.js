@@ -1,3 +1,4 @@
+import logger from 'electron-log';
 import Article from '../models/article';
 import API_URL from './api';
 
@@ -20,7 +21,7 @@ export const getArticles = async () => {
     const { data } = await handleResponse(response);
     return data.map(item => new Article(item));
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    logger.error('Error fetching articles:', error);
     throw error;
   }
 };
@@ -31,7 +32,7 @@ export const getArticle = async (id) => {
       const { data } = await handleResponse(response);
       return new Article(data);
     } catch (error) {
-      console.error(`Error fetching article ${id}:`, error);
+      logger.error(`Error fetching article ${id}:`, error);
       throw error;
     }
   };
@@ -48,7 +49,7 @@ export const saveArticle = async (data) => {
     const { data: savedData } = await handleResponse(response);
     return new Article(savedData);
   } catch (error) {
-    console.error('Error saving article:', error);
+    logger.error('Error saving article:', error);
     throw error;
   }
 };
@@ -65,7 +66,7 @@ export const updateArticle = async (id, articleData) => {
     const { data: updatedData } = await handleResponse(response);
     return new Article(updatedData);
   } catch (error) {
-    console.error(`Error updating article ${id}:`, error);
+    logger.error(`Error updating article ${id}:`, error);
     throw error;
   }
 };
@@ -77,7 +78,7 @@ export const deleteArticle = async (id) => {
       });
       await handleResponse(response);
     } catch (error) {
-      console.error(`Error deleting article ${id}:`, error);
+      logger.error(`Error deleting article ${id}:`, error);
       throw error;
     }
   };

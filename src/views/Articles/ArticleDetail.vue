@@ -18,7 +18,6 @@
     <hr class="uk-margin-remove">
   </div>
   <!--ARTICLE-->
-
   <section class="uk-section uk-article uk-padding-remove-bottom uk-padding">
     <div class="uk-container uk-margin-medium-bottom uk-padding-remove">
       <div class="uk-padding-remove uk-flex uk-flex-between uk-flex-middle">
