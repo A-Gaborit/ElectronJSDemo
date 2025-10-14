@@ -72,10 +72,11 @@
 import {ref, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import { getArticle, deleteArticle } from '../../services/article'
+import Article from '../../models/article'
 
 const route = useRoute()
 const router = useRouter()
-const article = ref(null)
+const article = ref(Article)
 const loading = ref(false)
 const deleting = ref(false)
 
@@ -86,7 +87,7 @@ onMounted(async () => {
 async function loadArticle() {
   loading.value = true;
   try {
-    const { data } = await getArticle(route.params.id);
+    const data = await getArticle(route.params.id);
     article.value = data;
   } catch (err) {
     UIkit.notification({

@@ -54,13 +54,14 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticle, saveArticle } from '../../services/article'
+import Article from '../../models/article'
 
 const route = useRoute()
 const router = useRouter()
 
 const loading = ref(false)
 const saving = ref(false)
-const form = ref({ id: null, title: null, desc: null, author: null, imgPath: null })
+const form = ref(new Article())
 const isCreate = ref(false)
 
 onMounted(async () => {
@@ -75,14 +76,8 @@ onMounted(async () => {
 async function loadArticle() {
   loading.value = true
   try {
-    const { data } = await getArticle(route.params.id)
-    form.value = {
-      id: data.id,
-      title: data.title,
-      desc: data.desc,
-      author: data.author,
-      imgPath: data.imgPath
-    }
+    const data = await getArticle(route.params.id)
+    form.value = data
   } catch (e) {
     UIkit.notification({
       message: 'Erreur lors de la récupération de l\'article',

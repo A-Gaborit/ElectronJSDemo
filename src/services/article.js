@@ -1,3 +1,4 @@
+import Article from '../models/article';
 import API_URL from './api';
 
 const handleResponse = async (response) => {
@@ -16,8 +17,8 @@ const handleResponse = async (response) => {
 export const getArticles = async () => {
   try {
     const response = await fetch(`${API_URL}/articles`);
-    const data = await handleResponse(response);
-    return data;
+    const { data } = await handleResponse(response);
+    return data.map(item => new Article(item));
   } catch (error) {
     console.error('Error fetching articles:', error);
     throw error;
@@ -27,8 +28,8 @@ export const getArticles = async () => {
 export const getArticle = async (id) => {
     try {
       const response = await fetch(`${API_URL}/articles/${id}`);
-      const data = await handleResponse(response);
-      return data;
+      const { data } = await handleResponse(response);
+      return new Article(data);
     } catch (error) {
       console.error(`Error fetching article ${id}:`, error);
       throw error;
@@ -44,7 +45,8 @@ export const saveArticle = async (data) => {
       },
       body: JSON.stringify(data),
     });
-    return await handleResponse(response);
+    const { data: savedData } = await handleResponse(response);
+    return new Article(savedData);
   } catch (error) {
     console.error('Error saving article:', error);
     throw error;
@@ -60,7 +62,8 @@ export const updateArticle = async (id, articleData) => {
       },
       body: JSON.stringify(articleData),
     });
-    return await handleResponse(response);
+    const { data: updatedData } = await handleResponse(response);
+    return new Article(updatedData);
   } catch (error) {
     console.error(`Error updating article ${id}:`, error);
     throw error;

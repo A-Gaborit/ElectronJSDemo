@@ -68,8 +68,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getArticles } from '../../services/article'
+import Article from '../../models/article'
 
-const articles = ref([])
+const articles = ref([Article])
 const loading = ref(false)
 const router = useRouter();
 
@@ -81,7 +82,7 @@ async function loadArticles() {
   loading.value = true;
   
   try {
-    const { data } = await getArticles();
+    const data = await getArticles();
     articles.value = data;
   } catch (err) {
     UIkit.notification({
